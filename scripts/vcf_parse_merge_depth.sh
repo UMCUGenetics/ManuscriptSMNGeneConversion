@@ -8,8 +8,7 @@
 #SBATCH --output=vcf_parse_merge_depth_%j.out
 
 # Settings
-#samtools=/path/to/samtools
-samtools="singularity exec -B /hpc/:/hpc/ -B $TMPDIR:$TMPDIR /hpc/diaggen/software/singularity_cache/quay.io-biocontainers-samtools-1.15.1--h1170115_0.img samtools "
+samtools=/path/to/samtools
 
 # Stop execution of script whenever a non-zero exit status is returned
 set -e

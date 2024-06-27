@@ -22,12 +22,12 @@ Help()
   echo "options:"
   echo "h     print help"
   echo "o     output directory" 
-  echo "i     input directory, requires both SMA and 1000G subdirectory"
+  echo "i     input directory, requires both SMA and/or 1000G subdirectory"
   echo "f     full path to FASTA of reference contig, e.g. chr5.fa"
   echo "r     region of interest on contig, e.g. 71274893-71447410"
   echo "c     full path to copy_type_file"
   echo "p     full path to SNVs_pivoted_paraphase file"
-  echo "a     dataset analysis type (e.g. SMA or 1000G"
+  echo "a     dataset analysis type (e.g. SMA or 1000G)"
 }
 
 ### Files required ###
@@ -61,7 +61,6 @@ source ${repo_folder}/venv/bin/activate
 
 #Part 1
 #Creating depth files of region of interest
-#SMA
 mkdir -p "${output_dir}/${analysis}/fasta_haplotypes/depth_files"
 
 echo "Creating depth files per sample haplotype".

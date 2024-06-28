@@ -245,16 +245,16 @@ if __name__ == "__main__":
     parser.add_argument('sample_file_illumina', type=argparse.FileType('r'), help='File file sample_ids (for renaming)')
     parser.add_argument('translation_file', type=argparse.FileType('r'), help='TSV file with illumina, ont, ploidy')
     parser.add_argument('analysisID', help='ID of analysis (output folder)')
-    parser.add_argument('--min_gq_ont', default=10, type=float, help='minimum genotype quality variant [default 10]')
-    parser.add_argument('--min_dp_ont', default=4, type=float, help='minimum depth variant [default 4]')
+    parser.add_argument('--min_gq_ont', default=0, type=float, help='minimum genotype quality variant [default 0]')
+    parser.add_argument('--min_dp_ont', default=3, type=float, help='minimum depth variant [default 3]')
     parser.add_argument(
         '--min_af_ont',
-        default=[0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00],
+        default=[0, 0.5, 1.0],
         type=list,
-        help='minimum allele frequency variant [default list [0, 0.5, 0.85]]'
+        help='minimum allele frequency variant [default list [0, 0.5, 1.0]]'
     )
-    parser.add_argument('--min_dp_ill', default=10, type=float, help='minimum depth variant [default 4]')
-    parser.add_argument('--min_af_ill', default=15, type=float, help='minimum allele frequency variant [default 0.85]')
+    parser.add_argument('--min_dp_ill', default=10, type=float, help='minimum depth variant [default 10]')
+    parser.add_argument('--min_af_ill', default=15, type=float, help='minimum allele frequency variant [default 15]')
     args = parser.parse_args()
 
     translation = TranslationDict(args.translation_file)

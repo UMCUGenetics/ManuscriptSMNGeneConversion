@@ -16,7 +16,7 @@ pip install -r requirements.txt
 get_homopolymers_from_fasta.py 	create BED file with homopolymer region in the reference genome for length x-bp
 ```bash
 source <workflow_folder>/scripts/venv/bin/activate
-get_homopolymers_from_fasta.py <path_to_reference_fasta> <output_file> --homopolymer_len <int>
+python get_homopolymers_from_fasta.py <path_to_reference_fasta> <output_file> --homopolymer_len <int>
 ```
 * --homopolymer_len = minimum length of homopolymer to consider in output [default 3]
 
@@ -31,7 +31,8 @@ bedtools maskfasta -fi <reference_genome> -bed <mask_bed_file> -fo <output_file>
 
 ## 3) Calculate statistics between ONT and Illumina data with loop_illumina_stats.py
 ```bash
-loop_illumina_stats.py <input_folder_ont> <input_folder_illumina> <roi> <sample_file> <translation_file> <analysisID>
+source <workflow_folder>/scripts/venv/bin/activate
+python loop_illumina_stats.py <input_folder_ont> <input_folder_illumina> <roi> <sample_file> <translation_file> <analysisID>
 ```
 * input_folder_ont = full path to folder containing all Clair3 VCF files from ONT analysis
 * input_folder_illumina = full path to folder containing all GATK ploidy VCF files from Illumina analysis

@@ -77,10 +77,11 @@ vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv TSV file
 Note: script was runned and tested using rocker tidyverse v4.4 image.
 
 ```bash
-Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file>
+Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file> <prefix>
 ```
 * input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 1 (vcf_parse_merge_depth.sh)
 * PSV_file = PSV positions for the use reference genome. See repo/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
+* prefix (e.g. SMA)
 
 
 ### 4.3) split_reference_genome.py, slice reference genome for contig of interest.

@@ -85,8 +85,8 @@ Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file>
 
 ### 4.3) split_reference_genome.py, slice reference genome for contig of interest.
 ```bash
-source /hpc/diaggen/projects/ONT_SMA_project/software/ManuscriptSMNGeneConversion/scripts/venv/bin/activate
-/hpc/diaggen/projects/ONT_SMA_project/software/ManuscriptSMNGeneConversion/scripts/split_reference_genome.py <path_to_fasta> <contig>
+source <workflow_folder>/scripts//venv/bin/activate
+python split_reference_genome.py <path_to_fasta> <contig>
 ```
 * path_to_fasta = full path the reference genome fa/fasta file
 * contig = ID of contig that needs to be in the output (e.g. chr5).

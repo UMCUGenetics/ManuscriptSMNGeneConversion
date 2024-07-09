@@ -60,7 +60,7 @@ Note: change path to binairy for samtools in the script: samtools=/path/to/samto
 Alternatively change this to docker/singularity command.
 
 ```bash
-vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
+sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
 ```
 * path_to_output_folder = path to output folder
 * path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should excist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
@@ -106,7 +106,7 @@ Alternatively change this to docker/singularity command.
 4) Concatenate all FASTA into SMN1 or SMN2 haplotype output files.
 
 ```bash
-create_fasta_roi_SMA.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
+sh create_fasta_roi_SMA.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
 ```
 * output_dir =  full path to output folder.
 * input_dir = full path to input folder. This should be the output folder used in step 1.

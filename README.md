@@ -3,7 +3,7 @@ Scripts and files related to the SMN gene conversion manuscript
 
 # Make virtual env for python script
 ```bash
-cd Scripts
+cd scripts
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip

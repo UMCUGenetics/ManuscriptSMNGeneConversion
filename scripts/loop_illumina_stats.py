@@ -236,6 +236,8 @@ def TranslationDict(translation_file):
             translation[splitline[0]] = splitline[1]
     return translation
 
+def list_of_strings(arg):
+    return arg.split(',')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -250,7 +252,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '--min_af_ont',
         default=[0, 0.5, 1.0],
-        type=list,
+        type=list_of_strings,
         help='minimum allele frequency variant [default list [0, 0.5, 1.0]]'
     )
     parser.add_argument('--min_dp_ill', default=10, type=float, help='minimum depth variant [default 10]')
@@ -266,14 +268,14 @@ if __name__ == "__main__":
 
     for min_af in args.min_af_ont:
         print("analysis\tsample_id\ttotal_positions\tcalled_illumina_only\tcalled_ont_onlyP\tcalled_ont_illumina\tnot_called_ont_illumina\tsensitivity\tprecision\tcalled_ont_failed_illumina\tsensitivity_ont_failed\tcalled_ont_onlyF\tprecision_ont_failed")
-        ont_list, position_list = DetermineOverlap_ONT(args.input_folder_ont, args.roi, args.min_gq_ont, min_af, args.min_dp_ont, position_list_ill)
+        ont_list, position_list = DetermineOverlap_ONT(args.input_folder_ont, args.roi, args.min_gq_ont, float(min_af), args.min_dp_ont, position_list_ill)
 
         final_stats = []
         for sample in translation:
             position_dic = BEDdict(position_list)
             position_dic, sample_dic = AddToDicIllumina(ill_list, position_dic, "illumina", sample, translation[sample])
             position_dic, sample_dic = AddToDicONT(ont_list, position_dic, "ont", sample_dic, translation[sample])
-            stats = DetermineOverlap(position_dic, args.roi, translation[sample], args.analysisID, min_af)
+            stats = DetermineOverlap(position_dic, args.roi, translation[sample], args.analysisID, float(min_af))
             final_stats.append(stats)
 
         total_positions = 0

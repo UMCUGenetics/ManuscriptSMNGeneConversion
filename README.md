@@ -109,7 +109,7 @@ Alternatively change this to docker/singularity command.
 sh create_fasta_roi_SMA.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
 ```
 * output_dir =  full path to output folder.
-* input_dir = full path to input folder. This should be the output folder used in step 1.
+* input_dir = full path to input folder. This should be same input folder as used in step 4.1.
 * contig_fasta = full path to fa(sta) file from the selected contig (e.g. chr5). This is the output file from step 3 (e.g. chr5.fa).
 * ROI = region of interest. e.g. 71274893-71447410.
 * copy_type_file = full path to copy_type file as generated in step 2 (e.g. SMA_list_haplotypes_copy_type.tsv).

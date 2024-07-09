@@ -65,7 +65,7 @@ vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
 * path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should excist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
 
 Note:
-* the script contains specific regex for SMA/1000G sampleID used in the manuscript.
+* the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
 * vcf_parse_merge_depth.sh will run vcf_parser.py and merging_variant_depth_files.py
 
 vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv TSV file that will be the input file of step 2.
@@ -82,7 +82,7 @@ Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file>
 * PSV_file = PSV positions for the use reference genome. See repo/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
 
 
-### 4.3) split_reference_genome.py, slice reference genome for contig of interest (e.g. chr5).
+### 4.3) split_reference_genome.py, slice reference genome for contig of interest.
 ```bash
 source /hpc/diaggen/projects/ONT_SMA_project/software/ManuscriptSMNGeneConversion/scripts/venv/bin/activate
 /hpc/diaggen/projects/ONT_SMA_project/software/ManuscriptSMNGeneConversion/scripts/split_reference_genome.py <path_to_fasta> <contig>
@@ -94,7 +94,7 @@ source /hpc/diaggen/projects/ONT_SMA_project/software/ManuscriptSMNGeneConversio
 
 ### 4.4)create_fasta_roi_SMA.sh, create fasta sequence of haplotype based on original contig and detected SNVs within the region-of-interest.
 
-Note: change path to binairy for samtools in the script: samtools=/path/to/samtoolsript assumes binairy of samtools in path (tested with samtools 1.17)
+Note: change path to binairy for samtools in the script: samtools=/path/to/samtoolsript assumes binairy of samtools in path (tested with samtools 1.17)\
 Alternatively change this to docker/singularity command.
 
 
@@ -109,7 +109,7 @@ create_fasta_roi_SMA.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI
 * output_dir =  full path to output folder.
 * input_dir = full path to input folder. This should be the output folder used in step 1.
 * contig_fasta = full path to fa(sta) file from the selected contig (e.g. chr5). This is the output file from step 3 (e.g. chr5.fa).
-* ROI = region of interest. E.g. 71274893-71447410.
+* ROI = region of interest. e.g. 71274893-71447410.
 * copy_type_file = full path to copy_type file as generated in step 2 (e.g. SMA_list_haplotypes_copy_type.tsv).
 * pivot_file = full path to pivoted file as generated in step 2  (e.g. SMA_SNVs_pivoted_paraphase_suppl_made_in_R.tsv).
 * analysis = type of analysis, e.g. SMA or 1000G.

@@ -128,18 +128,18 @@ sh create_fasta_roi.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI>
 * analysis = type of analysis, e.g. SMA or 1000G.
 
 
-### 4.5) determine_and_show_SMN2_specific_positions.R
+### 4.5) determine_and_show_SMN_specific_positions.R
 
 <<< need to include explaination here >>>>
 
 The output of this script will result in two output files:
-<prefix>_SMN2_specific_positions_SMN2_0.9_SMN1_0.2.bed   BED file containing all SMN2 specific positions 
-<prefix>_SNVs_at_SMN2_specific_positions.tsv	tsv table containing SMN2 specific positions per haplotype. 
+<prefix>_<smn_type_env>_specific_positions_0.9_SMN1_0.2.bed   BED file containing all SMN specific positions 
+<prefix>_<smn_type_env>_at_SMN_specific_positions.tsv	tsv table containing SMN specific positions per haplotype. 
 
 Note: script was runned and tested using rocker tidyverse v4.4 image.
 
 ```bash
-Rscript determine_and_show_SMN2_specific_positions.R <input_SNV_table> <PSV_file> <prefix> <smn_type_env>
+Rscript determine_and_show_SMN_specific_positions.R <input_SNV_table> <PSV_file> <prefix> <smn_type_env>
 ```
 
 * input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)

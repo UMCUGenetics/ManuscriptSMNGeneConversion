@@ -51,6 +51,8 @@ To postprocess the SMA and 1000G data for the manuscript 4 main scripts are used
 2) SNV_analysis_paraphase.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with variants
 3) split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
 4) create_fasta_roi.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
+5) determine_and_show_SMN2_specific_positions.R was used for <<<<<<<<<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>>>>>>
+6) load_bed_and_show_SMN2_specific_positions.R  was used for <<<<<<<<<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>>>>>>
 
 ### 4.1) vcf_parse_merge_depth.sh, to make TSV file for readdepth of each variant position in each haplotype for each sample
 

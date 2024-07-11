@@ -51,8 +51,8 @@ To postprocess the SMA and 1000G data for the manuscript 4 main scripts are used
 2) SNV_analysis_paraphase.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with variants
 3) split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
 4) create_fasta_roi.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
-5) determine_and_show_SMN2_specific_positions.R was used for <<<<<<<<<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>>>>>>
-6) load_bed_and_show_SMN2_specific_positions.R  was used for <<<<<<<<<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>>>>>>
+5) determine_and_show_SMN2_specific_positions.R was used for <<<<<<<<< xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx >>>>>>
+6) load_bed_and_show_SMN2_specific_positions.R  was used for <<<<<<<<< xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx >>>>>>
 
 ### 4.1) vcf_parse_merge_depth.sh, to make TSV file for readdepth of each variant position in each haplotype for each sample
 
@@ -130,7 +130,7 @@ sh create_fasta_roi.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI>
 
 ### 4.5) determine_and_show_SMN2_specific_positions.R
 
-<<<need to include explaination here>>>>
+<<< need to include explaination here >>>>
 
 The output of this script will result in two output files:
 <prefix>_SMN2_specific_positions_SMN2_0.9_SMN1_0.2.bed   BED file containing all SMN2 specific positions 
@@ -139,17 +139,18 @@ The output of this script will result in two output files:
 Note: script was runned and tested using rocker tidyverse v4.4 image.
 
 ```bash
-Rscript determine_and_show_SMN2_specific_positions.R <input_SNV_table> <PSV_file> <prefix>
+Rscript determine_and_show_SMN2_specific_positions.R <input_SNV_table> <PSV_file> <prefix> <smn_type_env>
 ```
 
 * input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)
 * PSV_file = PSV positions for the use reference genome. See <repo_folder>/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
 * prefix (e.g. SMA/1000G)
+* smn_type_env SMN type for output: e.g. SMN1-env/SMN2-env
 
 
 ### 4.6) load_bed_and_show_SMN2_specific_positions.R
 
-<<<need to include explaination here>>>>
+<<< need to include explaination here >>>>
 
 The output of this script will result in a .tsv output file:
 <prefix>_SNVs_at_SMN2_specific_positions.tsv    tsv table containing SMN2 specific positions per haplotype.

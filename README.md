@@ -30,6 +30,9 @@ bedtools maskfasta -fi <reference_genome> -bed <mask_bed_file> -fo <output_file>
 * output = output name for masker reference genome (e.g. T2T-CHM13 v2.0/hs1 as used in the manuscript)
 
 ## 3) Calculate statistics between ONT and Illumina data with loop_illumina_stats.py
+This script calculates sensitivity and precision for SNV (only) between Illumina (GATK ploidy VCF) and ONT data (Clair3 haplotype variant calling).
+
+
 ```bash
 source <workflow_folder>/scripts/venv/bin/activate
 python loop_illumina_stats.py <input_folder_ont> <input_folder_illumina> <roi> <sample_file> <translation_file> <analysisID>
@@ -44,10 +47,10 @@ python loop_illumina_stats.py <input_folder_ont> <input_folder_illumina> <roi> <
 ## 4) Postprocessing data for manuscript results and figures
 
 To postprocess the SMA and 1000G data for the manuscript 4 main scripts are used.
-1) vcf_parse_merge_depth.sh was used to create a tsv file based on the readdepth of each variant position in each haplotype for each sample
-2) SNV_analysis_paraphase.R was used to to determine SMN_copy_type based on PSV13 and output TSV file with variants
+1) vcf_parse_merge_depth.sh was used to create a tsv file containing the Clair3 variants and read depth on eacht variant position in each haplotype for each sample
+2) SNV_analysis_paraphase.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with variants
 3) split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
-4) create_fasta_roi_SMA.sh was used to create fasta sequences of each haplotype based on original reference contig and detected SNVs.
+4) create_fasta_roi.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
 
 ### 4.1) vcf_parse_merge_depth.sh, to make TSV file for readdepth of each variant position in each haplotype for each sample
 
@@ -56,23 +59,28 @@ To postprocess the SMA and 1000G data for the manuscript 4 main scripts are used
 3) Calculate depth for all variant positions in BED file
 4) Merge depth files into analysis specific .tsv files
 
-Note: change path to binairy for samtools in the script: samtools=/path/to/samtoolsript assumes binairy of samtools in path (tested with samtools 1.17)
+Note: change /path/to/samtooltools in vcf_parse_merge_depth.sh to excecutable/binary or docker/singularity command of samtools (tested with samtools 1.17)
 Alternatively change this to docker/singularity command.
 
 ```bash
 sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
 ```
 * path_to_output_folder = path to output folder
-* path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should excist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
+* path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should exist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
 
 Note:
 * the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
 * vcf_parse_merge_depth.sh will run vcf_parser.py and merging_variant_depth_files.py
 
-vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv TSV file that will be the input file of step 2.
+vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv TSV file that will be the input file of step 4.2, 4.5, and 4.6.
 
 
-### 4.2) SNV_analysis_paraphase.R to determine SMN_copy_type based on PSV13 and output TSV file with variants
+### 4.2) SNV_analysis_paraphase.R to determine SMN_copy_type based on PSV13 
+
+The output of this script will result in two .tsv files:
+{prefix}_haplotypes_copy_type.tsv	outputs SMN1, SMN2, of NA of SMN_copy_type for each sample based on PSV13
+{prefix}_SNVs_pivoted_paraphase_suppl_made_in_R.tsv	table of variants for each position for each sample
+These output TSV files will be used in step 4.4.
 
 Note: script was runned and tested using rocker tidyverse v4.4 image.
 
@@ -83,10 +91,11 @@ Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file> <prefix>
 * PSV_file = PSV positions for the use reference genome. See repo/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
 * prefix (e.g. SMA)
 
+output files will be stored in working directory.
 
 ### 4.3) split_reference_genome.py, slice reference genome for contig of interest.
 ```bash
-source <workflow_folder>/scripts//venv/bin/activate
+source <workflow_folder>/scripts/venv/bin/activate
 python split_reference_genome.py <path_to_fasta> <contig>
 ```
 * path_to_fasta = full path the reference genome fa/fasta file
@@ -94,7 +103,7 @@ python split_reference_genome.py <path_to_fasta> <contig>
 * output will be written to {contig}.fa
 
 
-### 4.4)create_fasta_roi_SMA.sh, create fasta sequence of haplotype based on original contig and detected SNVs within the region-of-interest.
+### 4.4)create_fasta_roi.sh, create fasta sequence of haplotype based on original contig and detected SNVs within the region-of-interest.
 
 Note: change path to binairy for samtools in the script: samtools=/path/to/samtoolsript assumes binairy of samtools in path (tested with samtools 1.17)\
 Alternatively change this to docker/singularity command.
@@ -106,7 +115,7 @@ Alternatively change this to docker/singularity command.
 4) Concatenate all FASTA into SMN1 or SMN2 haplotype output files.
 
 ```bash
-sh create_fasta_roi_SMA.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
+sh create_fasta_roi.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
 ```
 * output_dir =  full path to output folder.
 * input_dir = full path to input folder. This should be same input folder as used in step 4.1.

@@ -163,7 +163,7 @@ Rscript load_bed_and_show_SMN_specific_positions.R <input_SNV_table> <PSV_file> 
 
 * input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)
 * PSV_file = PSV positions for the use reference genome. See <repo_folder>/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
-* SMN_specific_positions_bed = {prefix}_{smn_type_env}_specific_positions_SMN2_0.9_SMN1_0.2.bed file created in step 4.5
+* SMN_specific_positions_bed = {prefix}_{smn_type_env}_specific_positions_SMN2_0.9_SMN1_0.2.bed file created in step 4.5 (e.g {workflow_folder}/datafiles/1000G_SMN2-env_specific_positions_0.9_SMN1_0.2.bed
 * outputfile_prefix = prefix of output file (e.g. SMA_SMN1-env, SMA_SMN2-env, 1000G_SMN1-env, 1000G_SMN2-env)
 
 The output of this script will result in a .tsv output file:

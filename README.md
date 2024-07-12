@@ -96,7 +96,9 @@ The output of this script will result in two .tsv files:
 * {prefix}_SNVs_pivoted_paraphase_suppl_made_in_R.tsv   table of variants for each position for each sample
 These output TSV files will be used in step 4.4.
 
-### 4.3) split_reference_genome.py, slice reference genome for contig of interest.
+### 4.3) split_reference_genome.py
+Slice reference genome for contig of interest.
+
 ```bash
 source <workflow_folder>/scripts/venv/bin/activate
 python split_reference_genome.py <path_to_fasta> <contig>

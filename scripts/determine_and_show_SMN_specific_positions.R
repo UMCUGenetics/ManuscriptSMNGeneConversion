@@ -9,7 +9,6 @@ PSVs = read_delim(args[2], delim = "\t")
 prefix = args[3]
 smn_type = args[4]
 
-
 ###PROCESSING SNVs###
 #add column for genotype_checked
 ##if cov <3 --> NA
@@ -92,5 +91,5 @@ SNV_at_SMN_specific_positions_pivoted <- SNV_at_SMN_specific_positions %>%
   arrange(POS) %>%
   pivot_wider(names_from = POS, values_from = environment) %>%
   arrange(sample_name, hap)
-write_tsv(SNV_at_SMN_specific_positions_pivoted, paste(prefix, "_", smn_type, "_at_SMN_specific_positions.tsv", sep = ""), quote="none", na="")
+write_tsv(SNV_at_SMN_specific_positions_pivoted, paste(prefix, "_", smn_type, "_SNVs_at_SMN_specific_positions.tsv", sep = ""), quote="none", na="")
 

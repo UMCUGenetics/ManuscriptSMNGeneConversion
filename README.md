@@ -23,9 +23,11 @@ python get_homopolymers_from_fasta.py <path_to_reference_fasta> <output_file> --
 ## 2) How to make a masked reference:
 
 ### 2.1 Determining masking coordinates with segmental duplication analysis
-Segmental duplication analysis was performed by running script: numcer_analysis.sh. This scripts uses the MUMmer (v4.0.0) system for aligning chromosome 5 with itself.
-It uses nucmer for genome alignment, delta-filter for filtering the delta file on 95% identity and alignment length of 10kb. The delta file is converted to a coordinates file (coords)
-and converted to a BED file. Each bed segment is named by reference-query alignment (1a-59a) and by query-reference alignment (1b-59b). 
+Segmental duplication analysis was performed by running script: numcer_analysis.sh. 
+This script requires installing the [MUMmer (v4.0.0)](https://mummer4.github.io/manual/manual.html) system. Adjust path of mummer instance in the script for personal use.
+
+The script codes for `nucmer` for genome alignment, `delta-filter` for filtering the delta file on 95% identity and alignment length of 10kb, and `show-coords` for converting the delta file into a coordinates file. 
+Columns 1, 2 and 8 are extracted to create a BED file, where bed segment is named by reference-query alignment (a segments) and by query-reference alignment (b segments). 
 
 ```bash
 scripts/./nucmer_analysis_update.sh -o <output_name> -r <reference> -q <query>

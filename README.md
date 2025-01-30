@@ -73,30 +73,32 @@ python loop_illumina_stats.py <input_folder_ont> <input_folder_illumina> <roi> <
 
 ## 4) Postprocessing data for manuscript results and figures
 
-To postprocess the SMA and 1000G data for the manuscript 4 main scripts are used.
-0) 4.0_select_bed_or_region_phasing.sh
-1) 4.1_vcf_parse_merge_depth.sh was used to create a tsv file containing the Clair3 variants and read depth on eacht variant position in each haplotype for each sample
-2) 4.2_SNV_analysis.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with all called variants
-3) 4.3_split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
-4) 4.4_create_fasta_roi_revision.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
-5) 4.5_determine_and_show_SMN_specific_positions.R was used to determine SMN1/SMN2 specific positions.
-6) 4.6_load_bed_and_show_SMN_specific_positions.R  was used to determine SMN1/SMN2 specific positions based on a BED input file.
+To postprocess the SMA and 1000G data for the manuscript, seven main scripts are used.
 
-### 4.0) 4.0_select_bed_or_region_phasing.sh
+1) 4.1_select_bed_or_region_phasing.sh
+2) 4.2_vcf_parse_merge_depth.sh was used to create a tsv file containing the Clair3 variants and read depth on eacht variant position in each haplotype for each sample
+3) 4.3_SNV_analysis.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with all called variants
+4) 4.4_split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
+5) 4.5_create_fasta_roi_revision.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
+6) 4.6_determine_and_show_SMN_specific_positions.R was used to determine SMN1/SMN2 specific positions.
+7) 4.7_load_bed_and_show_SMN_specific_positions.R  was used to determine SMN1/SMN2 specific positions based on a BED input file.
+
+### 4.1) 4.1_select_bed_or_region_phasing.sh
 This script selects the best phasing method ('bed' or 'region') based on read depth on PSV positions, and moves the unselected files into a separate folder.
 
 ```bash
-sh 4.0_select_bed_or_region_phasing.sh -i <path_to_input_folder> -p <path_to_PSV_bed_file>
+sh 4.1_select_bed_or_region_phasing.sh -i <path_to_input_folder> -p <path_to_PSV_bed_file>
 ```
 
 * path_to_input_folder = path to input folder. Within this folder, specific samplefolders should exist (sample names starting with 'SMA' or 'HG'). Within each samplefolder, bam_files_haplotagged/, bam_files_haplotagged_split/, clair3/, sniffles2/ and vcf/ folders should be present.
 * path_to_PSV_bed_file = path to a bed file containing PSV positions. See 'PSV_SMN1_minus_PSV8_liftover_hg19_to_T2T_CHM13.bed' in the datafiles folder of this repository.
 
 The unselected files will be moved into: input_dir/phasing_not_selected/
+
 The user can keep this folder or remove it if desired.
 
-### 4.1) 4.1_vcf_parse_merge_depth.sh
-Make TSV file for readdepth of each variant position in each haplotype for each sample.
+### 4.2) 4.2_vcf_parse_merge_depth.sh
+Make TSV file for read depth of each variant position in each haplotype for each sample.
 
 1) Loop over clair3 VCF files and make .tsv file
 2) Make BED file for all variant positions

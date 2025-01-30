@@ -1,6 +1,16 @@
 # ManuscriptSMNGeneConversion
 Scripts and files related to the SMN gene conversion manuscript
 
+# Download repository
+To download the main branch of the repository:
+```bash
+git clone https://github.com/UMCUGenetics/ManuscriptSMNGeneConversion.git
+```
+To download a specific branch:
+```bash
+git clone -b release_v1.1.0 https://github.com/UMCUGenetics/ManuscriptSMNGeneConversion.git
+```
+
 # Make virtual env for python script
 ```bash
 cd scripts

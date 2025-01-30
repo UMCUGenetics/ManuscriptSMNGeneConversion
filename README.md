@@ -80,7 +80,7 @@ To postprocess the SMA and 1000G data for the manuscript, seven main scripts are
 2) 4.2_vcf_parse_merge_depth.sh was used to create a tsv file containing the Clair3 variants and read depth on eacht variant position in each haplotype for each sample
 3) 4.3_SNV_analysis.R was used to to determine SMN_copy_type (SMN1 or SMN2) based on PSV13 and output TSV file with all called variants
 4) 4.4_split_reference_genome.py was used to slice the reference genome for the contig of interest (e.g. chr5 for SMA)
-5) 4.5_create_fasta_roi_revision.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
+5) 4.5_create_fasta_roi.sh was used to create fasta sequences of each haplotype based on original reference contig and detected variants.
 6) 4.6_determine_and_show_SMN_specific_positions.R was used to determine SMN1/SMN2 specific positions.
 7) 4.7_load_bed_and_show_SMN_specific_positions.R  was used to determine SMN1/SMN2 specific positions based on a BED input file.
 

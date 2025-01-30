@@ -13,7 +13,7 @@ git clone -b release_v1.1.0 https://github.com/UMCUGenetics/ManuscriptSMNGeneCon
 
 # Make virtual env for python script
 ```bash
-cd scripts
+cd ManuscriptSMNGeneConversion/scripts
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip

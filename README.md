@@ -12,9 +12,10 @@ git clone -b release_v1.1.0 https://github.com/UMCUGenetics/ManuscriptSMNGeneCon
 ```
 
 # Make virtual env for python script
+Note: this was developed and tested with Python 3.6.8. Using other versions of Python might give errors.
 ```bash
 cd ManuscriptSMNGeneConversion/scripts
-python3 -m venv venv
+python3.6 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
@@ -54,7 +55,7 @@ Tested with BEDtools v2.25.0
 bedtools maskfasta -fi <reference_genome> -bed <mask_bed_file> -fo <output_file>
 ```
 * reference_genome = full path to reference genome .fa(sta)
-* mask_bed_file = BED file with-to-mask regions (.e.g. ../datafiles/masking_approach_mask_coords_20a_22a.bed as used in the manuscript)
+* mask_bed_file = BED file with-to-mask regions (.e.g. <repo_folder>/datafiles/masking_approach_mask_coords_20a_22a.bed as used in the manuscript)
 * output = output name for masker reference genome (e.g. T2T-CHM13 v2.0/hs1 as used in the manuscript)
 
 ## 3) Calculate statistics between ONT and Illumina data with loop_illumina_stats.py
@@ -91,10 +92,9 @@ sh 4.1_select_bed_or_region_phasing.sh -i <path_to_input_folder> -p <path_to_PSV
 ```
 
 * path_to_input_folder = path to input folder. Within this folder, specific samplefolders should exist (sample names starting with 'SMA' or 'HG'). Within each samplefolder, bam_files_haplotagged/, bam_files_haplotagged_split/, clair3/, sniffles2/ and vcf/ folders should be present.
-* path_to_PSV_bed_file = path to a bed file containing PSV positions. See 'PSV_SMN1_minus_PSV8_liftover_hg19_to_T2T_CHM13.bed' in the datafiles folder of this repository.
+* path_to_PSV_bed_file = path to a bed file containing PSV positions. See 'PSV_SMN1_minus_PSV8_liftover_hg19_to_T2T_CHM13.bed' in the <repo_folder>/datafiles folder.
 
-The unselected files will be moved into: input_dir/phasing_not_selected/
-
+The unselected files will be moved into: input_dir/phasing_not_selected/ 
 The user can keep this folder or remove it if desired.
 
 ### 4.2) 4.2_vcf_parse_merge_depth.sh
@@ -109,35 +109,37 @@ Note: change /path/to/samtooltools in vcf_parse_merge_depth.sh to excecutable/bi
 Alternatively change this to docker/singularity command.
 
 ```bash
-sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
+sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder> -s <path_to_repo_folder>
 ```
 * path_to_output_folder = path to output folder
 * path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should exist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
+* path_to_repo_folder = path to repo folder containing the scripts, e.g. ManuscriptSMNGeneConversion/scripts.
 
 Note:
+* make sure the python virtual environment has been made in the repo folder (see above: Make virtual env for python script)
 * the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
-* vcf_parse_merge_depth.sh will run vcf_parser.py and merging_variant_depth_files.py
+* 4.2_vcf_parse_merge_depth.sh will run the scripts 4.2a_vcf_parser.py and 4.2b_merging_variant_depth_files.py from the repo folder.
 
-vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv TSV file that will be the input file of step 4.2, 4.5, and 4.6.
+4.2_vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv and 1000G/vcf_depth_merged_all_haps.tsv TSV files that will be the input file of step 4.3, 4.6, and 4.7.
 
 
-### 4.2) SNV_analysis_paraphase.R 
+### 4.3) 4.3_SNV_analysis.R
 
-Determine SMN_copy_type based on PSV13.
+Determine SMN_copy_type based on PSV13 and output a file with all variants.
 
 ```bash
-Rscript SNV_analysis_paraphase.R <input_SNV_table> <PSV_file> <prefix>
+Rscript 4.3_SNV_analysis.R <input_SNV_table> <PSV_file> <prefix>
 ```
-* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)
-* PSV_file = PSV positions for the use reference genome. See repo/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
+* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.2 (4.2_vcf_parse_merge_depth.sh)
+* PSV_file = PSV positions for the use reference genome. See repo/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for T2T-CHM13 positions.
 * prefix (e.g. SMA/1000G)
 
 output files will be stored in working directory.
 
 The output of this script will result in two .tsv files:
-* {prefix}_haplotypes_copy_type.tsv     outputs SMN1, SMN2, of NA of SMN_copy_type for each sample based on PSV13
-* {prefix}_SNVs_pivoted_paraphase_suppl_made_in_R.tsv   table of variants for each position for each sample
-These output TSV files will be used in step 4.4.
+* {prefix}_list_haplotypes_copy_type.tsv     outputs SMN1, SMN2, of NA of SMN_copy_type for each sample based on PSV13
+* {prefix}_variants_pivoted_supplementary.tsv   table of variants for each position for each sample
+These output TSV files will be used in step 4.5.
 
 ### 4.3) split_reference_genome.py
 Slice reference genome for contig of interest.
@@ -185,7 +187,7 @@ Note: script was runned and tested using rocker tidyverse v4.4 image.
 Rscript determine_and_show_SMN_specific_positions.R <input_SNV_table> <PSV_file> <prefix> <smn_type_env>
 ```
 
-* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)
+* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (4.2_vcf_parse_merge_depth.sh)
 * PSV_file = PSV positions for the use reference genome. See <repo_folder>/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
 * prefix (e.g. SMA/1000G)
 * smn_type_env SMN type for output: e.g. SMN1-env or SMN2-env
@@ -204,9 +206,9 @@ Note: script was runned and tested using rocker tidyverse v4.4 image.
 Rscript load_bed_and_show_SMN_specific_positions.R <input_SNV_table> <PSV_file> <SMN_specific_positions_bed> <outputfile_prefix>
 ```
 
-* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (vcf_parse_merge_depth.sh)
+* input_SNV_table = .tsv file (vcf_depth_merged_all_haps.tsv) produced in step 4.1 (4.2_vcf_parse_merge_depth.sh)
 * PSV_file = PSV positions for the use reference genome. See <repo_folder>/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
-* SMN_specific_positions_bed = {prefix}_{smn_type_env}_specific_positions_SMN2_0.9_SMN1_0.2.bed file created in step 4.5 (e.g {workflow_folder}/datafiles/1000G_SMN2-env_specific_positions_0.9_SMN1_0.2.bed
+* SMN_specific_positions_bed = {prefix}_{smn_type_env}_specific_positions_SMN2_0.9_SMN1_0.2.bed file created in step 4.5 (e.g <repo_folder>/datafiles/1000G_SMN2-env_specific_positions_0.9_SMN1_0.2.bed
 * outputfile_prefix = prefix of output file (e.g. SMA_SMN1-env, SMA_SMN2-env, 1000G_SMN1-env, 1000G_SMN2-env)
 
 The output of this script will result in a .tsv output file:

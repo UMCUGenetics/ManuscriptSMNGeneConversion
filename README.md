@@ -1,5 +1,5 @@
 # ManuscriptSMNGeneConversion
-Scripts and files related to the SMN gene conversion manuscript
+Scripts and files related to the SMN gene conversion manuscript. The preprint of this manuscript can currently be found at: https://doi.org/10.1101/2024.07.16.24310417
 
 # Download repository
 To download the main branch of the repository:

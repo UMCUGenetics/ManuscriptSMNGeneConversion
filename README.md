@@ -91,10 +91,10 @@ This script selects the best phasing method ('bed' or 'region') based on read de
 sh 4.1_select_bed_or_region_phasing.sh -i <path_to_input_folder> -p <path_to_PSV_bed_file>
 ```
 
-* path_to_input_folder = path to input folder. Within this folder, specific samplefolders should exist (sample names starting with 'SMA' or 'HG'). Within each samplefolder, bam_files_haplotagged/, bam_files_haplotagged_split/, clair3/, sniffles2/ and vcf/ folders should be present.
+* path_to_input_folder = path to input folder. Within this folder, specific samplefolders should exist (sample names starting with 'SMA' or 'HG'). Within each samplefolder, bam_files_haplotagged/, bam_files_haplotagged_split/, clair3/, sniffles2/ and vcf/ folders should be present (i.e. the output of HapSMA).
 * path_to_PSV_bed_file = path to a bed file containing PSV positions. See 'PSV_SMN1_minus_PSV8_liftover_hg19_to_T2T_CHM13.bed' in the <repo_folder>/datafiles folder.
 
-The unselected files will be moved into: input_dir/phasing_not_selected/ 
+The unselected files will be moved into: {input_dir}/phasing_not_selected/ 
 The user can keep this folder or remove it if desired.
 
 ### 4.2) 4.2_vcf_parse_merge_depth.sh
@@ -105,8 +105,11 @@ Make TSV file for read depth of each variant position in each haplotype for each
 3) Calculate depth for all variant positions in BED file
 4) Merge depth files into analysis specific .tsv files
 
-Note: change /path/to/samtooltools in vcf_parse_merge_depth.sh to excecutable/binary or docker/singularity command of samtools (tested with samtools 1.17)
-Alternatively change this to docker/singularity command.
+Note:
+* change /path/to/samtools in vcf_parse_merge_depth.sh to excecutable/binary or docker/singularity command of samtools (tested with samtools 1.17).
+* make sure the python virtual environment has been made in the repo folder (see above: Make virtual env for python script).
+* the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
+* 4.2_vcf_parse_merge_depth.sh will run the scripts 4.2a_vcf_parser.py and 4.2b_merging_variant_depth_files.py from the repo folder.
 
 ```bash
 sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder> -s <path_to_repo_folder>
@@ -115,17 +118,14 @@ sh vcf_parse_merge_depth.sh -o <path_to_output_folder> -i <path_to_input_folder>
 * path_to_input_folder =  path to input folder. Input folder should contain SMA/ and 1000G/ folder. Within SMA/ and 1000/ specific samplefolder should exist. Within each samplefolder clair3/ and bam_files_haplotagged_split/ should be present. clair3/ folder includes the clair3 VCF and index, bam_files_haplotagged_split/ contains the haplotype specific BAM files + index.
 * path_to_repo_folder = path to repo folder containing the scripts, e.g. ManuscriptSMNGeneConversion/scripts.
 
-Note:
-* make sure the python virtual environment has been made in the repo folder (see above: Make virtual env for python script)
-* the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
-* 4.2_vcf_parse_merge_depth.sh will run the scripts 4.2a_vcf_parser.py and 4.2b_merging_variant_depth_files.py from the repo folder.
-
 4.2_vcf_parse_merge_depth.sh will produce SMA/vcf_depth_merged_all_haps.tsv and 1000G/vcf_depth_merged_all_haps.tsv TSV files that will be the input file of step 4.3, 4.6, and 4.7.
 
 
 ### 4.3) 4.3_SNV_analysis.R
 
 Determine SMN_copy_type based on PSV13 and output a file with all variants.
+
+Note: script was runned and tested using rocker tidyverse v4.4 image.
 
 ```bash
 Rscript 4.3_SNV_analysis.R <input_SNV_table> <PSV_file> <prefix>
@@ -141,45 +141,49 @@ The output of this script will result in two .tsv files:
 * {prefix}_variants_pivoted_supplementary.tsv   table of variants for each position for each sample
 These output TSV files will be used in step 4.5.
 
-### 4.3) split_reference_genome.py
+### 4.4) 4.4_split_reference_genome.py
 Slice reference genome for contig of interest.
 
 ```bash
 source <workflow_folder>/scripts/venv/bin/activate
-python split_reference_genome.py <path_to_fasta> <contig>
+python 4.4_split_reference_genome.py <path_to_fasta> <contig>
 ```
 * path_to_fasta = full path the reference genome fa/fasta file
 * contig = ID of contig that needs to be in the output (e.g. chr5).
 * output will be written to {contig}.fa
 
 
-### 4.4) create_fasta_roi.sh
+### 4.5) 4.5_create_fasta_roi.sh
 
-Create fasta sequence of haplotype based on original contig and detected SNVs within the region-of-interest.
+Create fasta sequence of haplotype based on original contig and detected genetic variants within the region-of-interest.
 
-Note: change path to binairy for samtools in the script: samtools=/path/to/samtoolsript assumes binairy of samtools in path (tested with samtools 1.17)\
-Alternatively change this to docker/singularity command.
+Note:
+* change /path/to/samtools in vcf_parse_merge_depth.sh to excecutable/binary or docker/singularity command of samtools (tested with samtools 1.17).
+* make sure the python virtual environment has been made in the repo folder (see above: Make virtual env for python script)
+* the script contains specific regex for SMA/1000G sampleIDs used in the manuscript. These need to be changed if other sampleID are used.
+* 4.5_create_fasta_roi.sh will run the scripts 4.5a_prep_variant_input_fasta_maker.py and 4.5b_create_new_fasta_single.py from the repo folder.
 
 1) Make depth files for region of interest for each haplotype specific BAM using samtools
-2) Convert output of step 4.1 using prep_variant_input_fasta_maker.py and output files for step 4.3
-3) Make variant correct reference sequences (FASTA) for each haplotype for each sample using creating_new_fasta_single.py
-4) Concatenate all FASTA into SMN1 or SMN2 haplotype output files.
+2) Convert output of step 4.3_SNV_analysis.R using 4.5a_prep_variant_input_fasta_maker.py and output one file per haplotype
+3) Make variant correct reference sequences (FASTA) for each haplotype for each sample using 4.5b_create_new_fasta_single.py
+4) Concatenate all FASTA files into SMN1 or SMN2 haplotype output files.
 
 ```bash
-sh create_fasta_roi.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis>
+sh 4.5_create_fasta_roi.sh -o <output_dir> -i <input_dir> -f <contig_fasta> -r <ROI> -c <copy_type_file> -p <pivot_file> -a <analysis> -s <path_to_repo_folder>
 ```
 * output_dir =  full path to output folder.
-* input_dir = full path to input folder. This should be same input folder as used in step 4.1.
-* contig_fasta = full path to fa(sta) file from the selected contig (e.g. chr5). This is the output file from step 4.3 (e.g. chr5.fa).
+* input_dir = full path to input folder. This should be same input folder as used in step 4.2.
+* contig_fasta = full path to fa(sta) file from the selected contig (e.g. chr5). This is the output file from step 4.4 (e.g. chr5.fa).
 * ROI = region of interest. e.g. 71274893-71447410.
-* copy_type_file = full path to copy_type file as generated in step 4.2 (e.g. SMA_list_haplotypes_copy_type.tsv).
-* pivot_file = full path to pivoted file as generated in step 4.2  (e.g. SMA_SNVs_pivoted_paraphase_suppl_made_in_R.tsv).
+* copy_type_file = full path to copy_type file as generated in step 4.3 (e.g. SMA_list_haplotypes_copy_type.tsv).
+* pivot_file = full path to pivoted file as generated in step 4.3  (e.g. SMA_variants_pivoted_supplementary.tsv).
 * analysis = type of analysis, e.g. SMA or 1000G.
+* path_to_repo_folder = path to repo folder containing the scripts, e.g. ManuscriptSMNGeneConversion/scripts.
 
 
 ### 4.5) determine_and_show_SMN_specific_positions.R
 
-Determine SMN1/SMN2 specific positions, and output BED file and SMN1- or SMN2-specific tsv. This script should be run on control samples containing SMN1 and SMN2. Criteria for calling a position as SMN2-specific are that the variant is present in at least 90% of the called SMN2 haplotypes and at maximum in 20% of the called SMN1 haplotypes, based on at least 20 called haplotypes for both SMN1 and SMN2.
+Determine SMN1/SMN2 specific positions, and output BED file and SMN1- or SMN2-specific tsv. This script should be run on control samples containing SMN1 and SMN2 (ideally 2xSMN1 and 2xSMN2 per sample). Criteria for calling a position as SMN2-specific are that the variant is present in at least 90% of the called SMN2 haplotypes and at maximum in 10% of the called SMN1 haplotypes, based on at least 20 called haplotypes for both SMN1 and SMN2. These parameters can be modified, e.g. using less strict cutoffs for discovery purposes.
 
 Note: script was runned and tested using rocker tidyverse v4.4 image.
 

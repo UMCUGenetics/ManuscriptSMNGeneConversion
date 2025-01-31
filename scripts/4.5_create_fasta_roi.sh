@@ -2,9 +2,10 @@
 #SBATCH --job-name=create_fasta_roi
 #SBATCH --time=01:00:00
 #SBATCH --gres=tmpspace:50G
-#SBATCH --mem=50G
+#SBATCH --mem=10G
 #SBATCH --mail-type=ALL
-#SBATCH --ntasks=6
+#SBATCH --cpus-per-task=6
+#SBATCH --export=NONE
 #SBATCH --output=create_fasta_roi_%j.out
 
 
@@ -18,20 +19,21 @@ Help()
   echo "Executing script to make fasta files for all haplotypes"
   echo
   echo
-  echo "Syntax: Input requirements [-h:o:i:f:r:c:p:a]"
+  echo "Syntax: Input requirements [-h:o:i:f:r:c:p:a:s]"
   echo "options:"
   echo "h     print help"
-  echo "o     output directory" 
+  echo "o     output directory"
   echo "i     input directory, requires both SMA and/or 1000G subdirectory"
   echo "f     full path to FASTA of reference contig, e.g. chr5.fa"
   echo "r     region of interest on contig, e.g. 71274893-71447410"
   echo "c     full path to copy_type_file"
   echo "p     full path to SNVs_pivoted_paraphase file"
   echo "a     dataset analysis type (e.g. SMA or 1000G)"
+  echo "s     Repo folder, containing the scripts"
 }
 
 ### Files required ###
-while getopts h:o:i:f:r:c:p:a: flag
+while getopts h:o:i:f:r:c:p:a:s: flag
 do
   case "${flag}" in
     o) output_dir=${OPTARG};;
@@ -41,6 +43,7 @@ do
     c) copy_type_file=${OPTARG};;
     p) pivot_file=${OPTARG};;
     a) analysis=${OPTARG};;
+    s) repo_folder=${OPTARG};;
     h) # display Help
         Help
         exit 1;;
@@ -51,11 +54,8 @@ do
 done
 
 #define tools
-#samtools=/path/to/samtools
-samtools="singularity exec -B /hpc/:/hpc/ -B $TMPDIR:$TMPDIR /hpc/diaggen/software/singularity_cache/quay.io-biocontainers-samtools-1.15.1--h1170115_0.img samtools "
+samtools=/path/to/samtools
 
-## Repository wkdir
-repo_folder="$(dirname "$(readlink -f "$0")")"
 
 ## Load virtual venv
 source ${repo_folder}/venv/bin/activate
@@ -64,11 +64,11 @@ source ${repo_folder}/venv/bin/activate
 #Creating depth files of region of interest
 mkdir -p "${output_dir}/${analysis}/fasta_haplotypes/depth_files"
 
-echo "Creating depth files per sample haplotype".
+echo "Creating depth files per sample haplotype"
 echo ${input_dir}/${analysis}/{SMA,HG}*/bam_files_haplotagged_split
+
+
 # Iterate over directories
-
-
 for dir in ${input_dir}/${analysis}/{SMA,HG}*/bam_files_haplotagged_split; do
   if [ -d "${dir}" ]; then
     echo "Processing files in directory: ${dir}"
@@ -104,7 +104,7 @@ mkdir -p "${output_dir}/${analysis}/fasta_haplotypes/pos_ref_alt_files"
 cd "${output_dir}/${analysis}/fasta_haplotypes/pos_ref_alt_files"
 
 
-$repo_folder/prep_variant_input_fasta_maker.py $pivot_file pos_ref_alt_
+$repo_folder/4.5a_prep_variant_input_fasta_maker.py $pivot_file pos_ref_alt_
 
 #Part 3
 #making fasta files of all haplotypes
@@ -123,7 +123,7 @@ for alt_file_path in ${output_dir}/${analysis}/fasta_haplotypes/pos_ref_alt_file
     echo "${hap}"
     echo "Creating a fasta file for ${sample_name} ${hap}"
     # Execute python script
-    python3 $repo_folder/creating_new_fasta_single.py ${contig_fasta} ${alt_file_path} ${ROI} ${output_dir}/${analysis}/fasta_haplotypes/fasta/${sample_name}_${hap}.fa ${output_dir}/${analysis}/fasta_haplotypes/log/${sample_name}_${hap}.txt ${output_dir}/${analysis}/fasta_haplotypes/depth_files/*${sample_name}_${hap}*.bed ${sample_name}_${hap}
+    python3 $repo_folder/4.5b_create_new_fasta_single.py ${contig_fasta} ${alt_file_path} ${ROI} ${output_dir}/${analysis}/fasta_haplotypes/fasta/${sample_name}_${hap}.fa ${output_dir}/${analysis}/fasta_haplotypes/log/${sample_name}_${hap}.txt ${output_dir}/${analysis}/fasta_haplotypes/depth_files/*${sample_name}_${hap}*.bed ${sample_name}_${hap}
   fi
 done
 

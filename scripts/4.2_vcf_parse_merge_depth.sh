@@ -1,10 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=vcf_parse_merge_depth
 #SBATCH --time=01:00:00
-#SBATCH --gres=tmpspace:50G
-#SBATCH --mem=50G
+#SBATCH --gres=tmpspace:10G
+#SBATCH --mem=1G
 #SBATCH --mail-type=ALL
-#SBATCH --ntasks=6
+#SBATCH --cpus-per-task=6
+#SBATCH --export=NONE
 #SBATCH --output=vcf_parse_merge_depth_%j.out
 
 # Settings
@@ -20,19 +21,21 @@ Help()
   echo "Executing for multiple vcf files"
   echo
   echo
-  echo "Syntax: Input requirements [-d:h:o:i:f]"
+  echo "Syntax: Input requirements [-h:o:i:s]"
   echo "options:"
   echo "h     Print help"
   echo "o     Output directory"
   echo "i     Input directory, requires both SMA and 1000G subdirectory"
+  echo "s     Path to repo folder, containing the scripts"
 }
 
 ### Files required ###
-while getopts h:o:i: flag
+while getopts h:o:i:s: flag
 do
   case "${flag}" in
     o) output_dir=${OPTARG};;
     i) input_dir=${OPTARG};;
+    s) repo_folder=${OPTARG};;
     h) # display Help
         Help
         exit 1;;
@@ -42,11 +45,14 @@ do
   esac
 done
 
-## Repository wkdir
-repo_folder="$(dirname "$(readlink -f "$0")")"
+## Echo the input parameters
+echo "Output directory is ${output_dir}"
+echo "Input directory is ${input_dir}"
+echo "Repo folder is ${repo_folder}"
 
 ## Load virtual venv
 source ${repo_folder}/venv/bin/activate
+echo "Virtual environment has been loaded: ${repo_folder}/venv/bin/activate"
 
 #Part 1 of script
 #parsing VCF Files
@@ -62,7 +68,7 @@ for vcf_file in ${input_dir}/SMA/{SMA,HG}*/clair3/*.vcf.gz; do
     echo "Processing file: ${vcf_file}"
     file_name=$(basename "${vcf_file}" .vcf.gz)
     # Execute vcf parser python script
-    ${repo_folder}/vcf_parser.py "${vcf_file}" "${output_dir}/SMA/vcfs_parsed/${file_name}.tsv"
+    python3 ${repo_folder}/4.2a_vcf_parser.py "${vcf_file}" "${output_dir}/SMA/vcfs_parsed/${file_name}.tsv"
   fi
 done
 
@@ -78,7 +84,7 @@ for vcf_file in ${input_dir}/1000G/{SMA,HG}*/clair3/*.vcf.gz; do
     echo "Processing file: ${vcf_file}"
     file_name=$(basename "${vcf_file}" .vcf.gz)
     # Execute vcf parser python script
-    ${repo_folder}/vcf_parser.py "${vcf_file}" "${output_dir}/1000G/vcfs_parsed/${file_name}.tsv"
+    python3 ${repo_folder}/4.2a_vcf_parser.py "${vcf_file}" "${output_dir}/1000G/vcfs_parsed/${file_name}.tsv"
   fi
 done
 
@@ -212,10 +218,10 @@ awk 'FNR == 1 && NR!=1 { while (/^CHROM/) getline; }
 
 #part 4: merge depth column with merged vcf tsv
 #SMA
-${repo_folder}/merging_variant_depth_files.py "${output_dir}/SMA/vcfs_parsed/all_variants_all_haps_sample.tsv" "${output_dir}/SMA/depth_variant_positions/depth_all_variant_positions_all_haps.bed" "${output_dir}/SMA/vcf_depth_merged_all_haps.tsv"
+python3 ${repo_folder}/4.2b_merging_variant_depth_files.py "${output_dir}/SMA/vcfs_parsed/all_variants_all_haps_sample.tsv" "${output_dir}/SMA/depth_variant_positions/depth_all_variant_positions_all_haps.bed" "${output_dir}/SMA/vcf_depth_merged_all_haps.tsv"
 
 #1000G
-${repo_folder}/merging_variant_depth_files.py "${output_dir}/1000G/vcfs_parsed/all_variants_all_haps_sample.tsv" "${output_dir}/1000G/depth_variant_positions/depth_all_variant_positions_all_haps.bed" "${output_dir}/1000G/vcf_depth_merged_all_haps.tsv"
+python3 ${repo_folder}/4.2b_merging_variant_depth_files.py "${output_dir}/1000G/vcfs_parsed/all_variants_all_haps_sample.tsv" "${output_dir}/1000G/depth_variant_positions/depth_all_variant_positions_all_haps.bed" "${output_dir}/1000G/vcf_depth_merged_all_haps.tsv"
 
 
 echo "End of script"

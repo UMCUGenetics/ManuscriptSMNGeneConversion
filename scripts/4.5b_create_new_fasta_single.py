@@ -49,14 +49,14 @@ def parse_depth_file(depth_file):
 
 def replace_low_depth_nuc(dictionary, seq):
     """
-    Replace nucleotide with N if depth < 4
+    Replace nucleotide with N if depth < 3
 
     :param dictionary; dict; key = depth, value = POS
     :param seq:list; Every item in the list being one nucleotide of a DNA string
     """
 
     for key,value in dictionary.items():
-        if int(key) < 4:
+        if int(key) < 3:
            for position in value:
                seq[position] = "N"
     return seq
@@ -81,7 +81,7 @@ def snp_change_fasta(seq, pos, ref, alt):
         seq[pos] = alt
         print(f'{pos} has been turned from {ref} to {alt}')
     elif seq[pos] == 'N':
-        print(f'depth on {pos} lower than 4')
+        print(f'depth on {pos} lower than 3')
     else:
         print(f'error in {pos}, the length of the  is {len(ref)},'
               f'the base of the reference alle is {ref} the of the fasta '
@@ -180,7 +180,6 @@ def write_file(seq):
         for i in range(0, len(seq), 50):
             file.write(f'{seq[i:i + 50]}\n')
 
-#edit Maria: change logfile_{sys.argv[5]} to {sys.argv[5]}
 def main():
     """this is the main function of the script"""
     if os.path.exists(f'{sys.argv[5]}'):

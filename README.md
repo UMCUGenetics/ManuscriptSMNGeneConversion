@@ -6,10 +6,6 @@ To download the main branch of the repository:
 ```bash
 git clone https://github.com/UMCUGenetics/ManuscriptSMNGeneConversion.git
 ```
-To download a specific branch:
-```bash
-git clone -b release_v1.1.0 https://github.com/UMCUGenetics/ManuscriptSMNGeneConversion.git
-```
 
 # Make virtual env for python script
 Note: this was developed and tested with Python 3.6.8. Using other versions of Python might give errors.

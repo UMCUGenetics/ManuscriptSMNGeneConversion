@@ -24,7 +24,7 @@ pip install -r requirements.txt
 # Methods
 
 ## 1) How to make the homopolymer BED file.
-get_homopolymers_from_fasta.py 	create BED file with homopolymer region in the reference genome for length x-bp
+get_homopolymers_from_fasta.py 	create BED file with homopolymer regions in the reference genome for length x-bp
 ```bash
 source <workflow_folder>/scripts/venv/bin/activate
 python get_homopolymers_from_fasta.py <path_to_reference_fasta> <output_file> --homopolymer_len <int>

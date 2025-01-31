@@ -34,20 +34,20 @@ python get_homopolymers_from_fasta.py <path_to_reference_fasta> <output_file> --
 ## 2) How to make a masked reference:
 
 ### 2.1 Determining masking coordinates with segmental duplication analysis
-Segmental duplication analysis was performed by running script: numcer_analysis.sh. 
-This script requires installing the [MUMmer (v4.0.0)](https://mummer4.github.io/manual/manual.html) system. Adjust path of mummer instance in the script for personal use.
+Segmental duplication analysis was performed by running script: 2.1_numcer_analysis.sh. 
+This script requires installing the [MUMmer (v4.0.0)](https://mummer4.github.io/manual/manual.html) system. Adjust path of mummer in the script for personal use.
 
-The script codes for `nucmer` for genome alignment, `delta-filter` for filtering the delta file on 95% identity and alignment length of 10kb, and `show-coords` for converting the delta file into a coordinates file. 
+The script runs `nucmer` for genome alignment, `delta-filter` for filtering the delta file for 95% identity and alignment length of 10kb, and `show-coords` for converting the delta file into a coordinates file. 
 Columns 1, 2 and 8 are extracted to create a BED file, where bed segment is named by reference-query alignment (a segments) and by query-reference alignment (b segments). 
 
 ```bash
-scripts/./nucmer_analysis_update.sh -o <output_name> -r <reference> -q <query>
+scripts/./2.1_nucmer_analysis.sh -o <output_name> -r <reference> -q <query>
 ```
 * output_name = output name for the files this script outputs
 * reference = reference fasta (we used chr5.fa of T2T-CHM13)
 * query = query fasta (we used chr5.fa of T2T-CHM13)
 
-Coordinate for masking can be extracted from the BED file into a new BED file and used in 2.2 Masked reference genome
+Coordinate for masking can be extracted from the BED file into a new BED file and used in step 2.2 Masked reference genome.
 
 ### 2.2 Masked reference genome
 Tested with BEDtools v2.25.0

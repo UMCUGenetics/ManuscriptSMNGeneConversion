@@ -195,7 +195,7 @@ Rscript 4.6_determine_and_show_SMN_specific_positions.R <input_SNV_table> <PSV_f
 * PSV_file = PSV positions for the used reference genome. See <repo_folder>/datafiles/PSV_liftover_hg19_to_T2T_CHM13.txt for CHM13 positions.
 * prefix (e.g. SMA/1000G)
 
-The output of this script will result in two output files:
+The output of this script will result in three output files:
 * {prefix}_SNV_tally_at_PSVs_and_SMN1-2_specific_positions.tsv   TSV file containing all SMN1- or SMN2-specific positions including variant counts and ratios in SMN1 and SMN2 haplotypes
 * {prefix}_PSVs_and_SMN1-2_specific_positions.bed   BED file containing all SMN1- or SMN2-specific positions
 * {prefix}_SNVs_at_SMN1-2_specific_positions.tsv   TSV file containing variant calls (1 for SMN1 environment SNV, 2 for SMN2 environment SNV) at SMN1/2-specific variant positions per haplotype.
